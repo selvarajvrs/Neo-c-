@@ -9,8 +9,8 @@ namespace NeoContract
     {
         //public static event Action<byte[], byte[], BigInteger> TokenPreSaleTransfer;
 
-        public static string name = "Wand Token";
-        public static string symbol = "WAND";
+        public static string name = "New Token";
+        public static string symbol = "SP";
         public static int decimals = 18;
         public const ulong factor = 100000;
         public static ulong totalSupply = 75;  
