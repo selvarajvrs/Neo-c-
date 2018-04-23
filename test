@@ -12,7 +12,7 @@ namespace newNeo
         public static Object Main(string operation, byte[] originator, Object[] args)
         {
             Runtime.Notify("starting main function");
-            if (originator==new byte[] { })
+            if (originator == new byte[] { })
             {
                 Runtime.Notify("empty originator");
                 return false;
@@ -25,7 +25,7 @@ namespace newNeo
             }
             if (operation == "changeApprover")
             {
-                if(args.Length!=1)
+                if (args.Length != 1)
                 {
                     Runtime.Notify("invalid arguments...");
                     return false;
@@ -34,7 +34,7 @@ namespace newNeo
             }
             if (operation == "addAuthorizedAddress")
             {
-                if(args.Length!=1)
+                if (args.Length != 1)
                 {
                     Runtime.Notify("invalid arguments...");
                     return false;
@@ -126,7 +126,7 @@ namespace newNeo
             {
                 return closeVault();
             }
-            if (operation == "storeInvault")
+            if (operation == "storeInVault")
             {
                 if (args.Length != 2)
                 {
@@ -454,11 +454,11 @@ namespace newNeo
             {
                 byte[] _orderHashKey = getKey(orderHash, "orderHash");
                 byte[] _orderIDKey = getKey(orderID, "orderId");
-                BigInteger _count = new BigInteger(Storage.Get(Storage.CurrentContext, "orderCount"));
-                _count = _count + 1;
+                byte[] _count = (Storage.Get(Storage.CurrentContext, "orderCount"));
+                BigInteger newCount = new BigInteger(_count) + 1;
                 Storage.Put(Storage.CurrentContext, _orderHashKey, 1);
                 Storage.Put(Storage.CurrentContext, _orderIDKey, 1);
-                Storage.Put(Storage.CurrentContext, "orderCount", _count);
+                Storage.Put(Storage.CurrentContext, "orderCount", newCount);
                 return true;
             }
             return false;
@@ -514,7 +514,7 @@ namespace newNeo
             Storage.Put(Storage.CurrentContext, "wallet", _wallet);
             return true;
         }
-        
+
         public static bool validExchangeFee(byte[] _sellerFeeToken, byte[] _buyerFeeToken, BigInteger _sellerFeeValue, BigInteger _buyerFeeValue)
         {
             byte[] addr = new byte[] { };
@@ -586,7 +586,7 @@ namespace newNeo
             {
                 return false;
             }
-            bool result=transferTokens(_sellerTokens, _buyerTokens, _sellerValues, _buyerValues, _orderAddresses, _orderValues);
+            bool result = transferTokens(_sellerTokens, _buyerTokens, _sellerValues, _buyerValues, _orderAddresses, _orderValues);
             if (result != true) return false;
             return storeInVault(Hash256(_sellerHash.Concat(_buyerHash).Concat(_orderID)), _orderID);
         }
@@ -645,7 +645,7 @@ namespace newNeo
             byte[] token = (byte[])_orderAddresses[4];
             //check contract invoke
             var Contract = (NEP5Contract)token.ToDelegate();
-            var result = (BigInteger) Contract("allowance", arg);
+            var result = (BigInteger)Contract("allowance", arg);
             if (result <= _orderValues[1]) return false;
 
             arg = new Object[] { _orderAddresses[1], (byte[])ExecutionEngine.ExecutingScriptHash };
