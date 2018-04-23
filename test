@@ -8,36 +8,16 @@ namespace newNeo
 {
     public class Contract1 : SmartContract
     {
-        //static int[] exFees = new int[3];
         public delegate object NEP5Contract(string method, object[] args);
         public static Object Main(string operation, byte[] originator, Object[] args)
         {
             Runtime.Notify("starting main function");
-            if (operation == "getTwoWayOrderHash")
+            if (originator==new byte[] { })
             {
-                Runtime.Notify("getTwoWayOrderHash calling");
-                return getTwoWayOrderHash((Object[])args[0], (Object[])args[1], (BigInteger[])args[2], (BigInteger[])args[3], (Object[])args[4], (BigInteger[])args[5], (byte[])args[6]);
-                //getHash((byte[]) args[0], (byte[])args[1],(byte[]) args[2],(byte[]) args[3], (byte[]) args[4], (byte[]) args[5], (byte[]) args[6], (byte[]) args[7]);
+                Runtime.Notify("empty originator");
+                return false;
             }
-            if(operation== "getOrderHash")
-            {
-                return getOrderHash((Object[])args[0],(BigInteger[]) args[1], (BigInteger) args[2], (BigInteger) args[3], (byte[]) args[4], (byte[]) args[5], (byte[]) args[6], (byte[]) args[7]);
-            }
-            if (operation == "getHash")
-                return getHash((byte[]) args[0], (byte[]) args[1], (byte[]) args[2], (byte[]) args[3], (byte[]) args[4], (byte[]) args[5], (byte[]) args[6], (byte[]) args[7]);
-            if (operation == "orderExists")
-            {
-                return orderExists((byte[])args[0], (byte[])args[1]);
-            }
-            if(operation== "validateAuthorization")
-            {
-                return validateAuthorization((object[]) args[0], (object[]) args[1], (BigInteger[]) args[2], (BigInteger[]) args[3], (Object[]) args[4], (BigInteger[]) args[5]);
-            }
-            if (operation == "transferToken")
-            {
-                return transferTokens((Object[])args[0], (Object[])args[1], (BigInteger[])args[2], (BigInteger[])args[3], (Object[])args[4], (BigInteger[])args[5]);
-            }
-            Runtime.Notify("checking for deploy");
+
             if (operation == "deploy")
             {
                 Runtime.Notify("calling deploy");
@@ -45,54 +25,114 @@ namespace newNeo
             }
             if (operation == "changeApprover")
             {
+                if(args.Length!=1)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
                 return changeApprover(originator, (byte[])args[0]);
             }
             if (operation == "addAuthorizedAddress")
             {
+                if(args.Length!=1)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
                 return addAuthorizedAddress(originator, (byte[])args[0]);
             }
             if (operation == "removeAuthorizedAddress")
             {
+                if (args.Length != 1)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
                 return removeAuthorizedAddress(originator, (byte[])args[0]);
             }
             if (operation == "updateFeeSchedule")
             {
+                if (args.Length != 3)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
                 return updateFeeSchedule((BigInteger)args[0], (BigInteger)args[1], (BigInteger)args[2]);
             }
             if (operation == "calcTradeFee")
             {
+                if (args.Length != 2)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
                 return calcTradeFee((int)args[0], (int)args[1]);
             }
-            if (operation == "calcMultiTradeFee")
+            if (operation == "calcTradeFeeMulti")
             {
+                if (args.Length != 2)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
                 return calcTradeFeeMulti((uint[])args[0], (int[])args[1]);
             }
             if (operation == "addOwner")
             {
+                if (args.Length != 1)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
                 return AddOwner((byte[])args[0]);
             }
             if (operation == "removeOwner")
             {
+                if (args.Length != 1)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
                 return removeOwner((byte[])args[0]);
             }
             if (operation == "getKey")
+            {
+                if (args.Length != 2)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
                 return getKey((byte[])args[0], (string)args[1]);
+            }
             if (operation == "openVault")
             {
+                if (args.Length != 2)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
                 return openVault((int)args[0], (int)args[1]);
             }
             if (operation == "extendVault")
             {
+                if (args.Length != 1)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
                 return extendVault((BigInteger)args[0]);
             }
             if (operation == "closeVault")
             {
                 return closeVault();
             }
-            Runtime.Notify("checking for store in vault...");
             if (operation == "storeInvault")
             {
-                Runtime.Notify("yes");
+                if (args.Length != 2)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
                 return storeInVault((byte[])args[0], (byte[])args[1]);
             }
             if (operation == "sealVault")
@@ -105,38 +145,105 @@ namespace newNeo
             }
             if (operation == "orderLocated")
             {
+                if (args.Length != 2)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
                 return orderLocated((byte[])args[0], (byte[])args[1]);
             }
             if (operation == "updateVault")
             {
+                if (args.Length != 1)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
                 return updateVault((byte[])args[0]);
             }
             if (operation == "updateWallet")
             {
+                if (args.Length != 1)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
                 return updateWallet((byte[])args[0]);
             }
             if (operation == "validExchangeFee")
             {
+                if (args.Length != 4)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
                 return validExchangeFee((byte[])args[0], (byte[])args[1], (BigInteger)args[2], (BigInteger)args[3]);
+            }
+            if (operation == "getTwoWayOrderHash")
+            {
+                if (args.Length != 7)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
+                return getTwoWayOrderHash((Object[])args[0], (Object[])args[1], (BigInteger[])args[2], (BigInteger[])args[3], (Object[])args[4], (BigInteger[])args[5], (byte[])args[6]);
+            }
+            if (operation == "getOrderHash")
+            {
+                if (args.Length != 8)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
+                return getOrderHash((Object[])args[0], (BigInteger[])args[1], (BigInteger)args[2], (BigInteger)args[3], (byte[])args[4], (byte[])args[5], (byte[])args[6], (byte[])args[7]);
+            }
+            if (operation == "getHash")
+            {
+                if (args.Length != 8)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
+                return getHash((byte[])args[0], (byte[])args[1], (byte[])args[2], (byte[])args[3], (byte[])args[4], (byte[])args[5], (byte[])args[6], (byte[])args[7]);
             }
             if (operation == "OneWayFullfillPO")
             {
-                return OneWayFullfillPO(originator, (Object[]) args[0], (Object[]) args[1], (BigInteger[]) args[2], (BigInteger[]) args[3], (Object[]) args[4],
-            (BigInteger[]) args[5], (BigInteger[]) args[6], (byte[]) args[7], (byte[]) args[8], (byte[]) args[9], (byte[]) args[10], (byte[]) args[11]);
-            }
-            if (operation == "checkings")
-            {
-                Runtime.Notify(ExecutionEngine.ExecutingScriptHash);
-                Transaction tx = (Transaction)ExecutionEngine.ScriptContainer;
-                TransactionOutput[] reference = tx.GetReferences();
-                // you can choice refund or not refund
-                foreach (TransactionOutput output in reference)
+                if (args.Length != 12)
                 {
-                    Runtime.Notify(output.ScriptHash);
+                    Runtime.Notify("invalid arguments...");
+                    return false;
                 }
-                return 10;
+                return OneWayFullfillPO(originator, (Object[])args[0], (Object[])args[1], (BigInteger[])args[2], (BigInteger[])args[3], (Object[])args[4],
+            (BigInteger[])args[5], (BigInteger[])args[6], (byte[])args[7], (byte[])args[8], (byte[])args[9], (byte[])args[10], (byte[])args[11]);
             }
-            Storage.Put(Storage.CurrentContext, "Hello", "World");
+            if (operation == "transferToken")
+            {
+                if (args.Length != 6)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
+                return transferTokens((Object[])args[0], (Object[])args[1], (BigInteger[])args[2], (BigInteger[])args[3], (Object[])args[4], (BigInteger[])args[5]);
+            }
+            if (operation == "orderExists")
+            {
+                if (args.Length != 2)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
+                return orderExists((byte[])args[0], (byte[])args[1]);
+            }
+            if (operation == "validateAuthorization")
+            {
+                if (args.Length != 6)
+                {
+                    Runtime.Notify("invalid arguments...");
+                    return false;
+                }
+                return validateAuthorization((object[])args[0], (object[])args[1], (BigInteger[])args[2], (BigInteger[])args[3], (Object[])args[4], (BigInteger[])args[5]);
+            }
+            Runtime.Notify("Not matching...");
             return false;
         }
         public static bool deploy(byte[] originator)
@@ -157,7 +264,6 @@ namespace newNeo
             if (newApprover != new byte[] { 0 })
             {
                 Storage.Put(Storage.CurrentContext, "approver", newApprover);
-                //LogApproverChanged(originator, approver, newApprover);
                 return true;
             }
             return false;
@@ -167,7 +273,6 @@ namespace newNeo
         {
             byte[] index = getKey(appIntegrator, "authorized");
             Storage.Put(Storage.CurrentContext, index, 1);
-            //LogAuthorizedAddressAdded(originator, appIntegrator);
             return true;
         }
 
@@ -175,7 +280,6 @@ namespace newNeo
         {
             byte[] index = getKey(appIntegrator, "authorized");
             Storage.Delete(Storage.CurrentContext, index);
-            //LogAuthorizedAddressRemoved(originator, appIntegrator);
             return true;
         }
         public static Object updateFeeSchedule(BigInteger _baseTokenFee, BigInteger _etherFee, BigInteger _normalTokenFee)
@@ -205,95 +309,73 @@ namespace newNeo
         public static int calcTradeFee(int _value, int _feeIndex)
         {
             int tokenFees = 0;
-            Runtime.Notify(10);
             if (_feeIndex < 0 && _feeIndex > 2)
             {
-                Runtime.Notify(11);
                 return 0;
             }
             if (_value < 0)
             {
-                Runtime.Notify(12);
                 return 0;
             }
             if (_feeIndex == 0)
             {
-                Runtime.Notify(13);
                 tokenFees = (int)new BigInteger(Storage.Get(Storage.CurrentContext, "BaseTokenFee"));
             }
             if (_feeIndex == 1)
             {
-                Runtime.Notify(14);
                 tokenFees = (int)new BigInteger(Storage.Get(Storage.CurrentContext, "EtherTokenFee"));
             }
             if (_feeIndex == 2)
             {
-                Runtime.Notify(15);
                 tokenFees = (int)new BigInteger(Storage.Get(Storage.CurrentContext, "NormalTokenFee"));
             }
             if (tokenFees == 0)
             {
-                Runtime.Notify(16);
                 return 0;
             }
 
-            Runtime.Notify(17);
             int _totalFees = (_value * (tokenFees)) / (1);//1 ether
             if (_totalFees < 0)
             {
-                Runtime.Notify(18);
                 return 0;
             }
-            Runtime.Notify(19);
             return _totalFees;
         }
         public static int[] calcTradeFeeMulti(uint[] __values, int[] __feeIndexes)
         {
-            Runtime.Notify(1);
             int[] _values = new int[__values.Length];
             int[] _feeIndexes = new int[__feeIndexes.Length];
             int[] empty = new int[_values.Length];
-            Runtime.Notify(2);
             for (int j = 0; j < _values.Length; j++)
             {
-                Runtime.Notify("in for loop1");
                 _values[j] = (int)__values[j];
                 _feeIndexes[j] = (int)__feeIndexes[j];
             }
             if (_values.Length <= 0)
             {
-                Runtime.Notify(3);
                 return empty;
             }
             if (_feeIndexes.Length <= 0)
             {
-                Runtime.Notify(4);
                 return empty;
             }
             if (_values.Length != _feeIndexes.Length)
             {
-                Runtime.Notify(5);
                 return empty;
             }
-            Runtime.Notify(6);
             int[] _totalFees = new int[_values.Length];
             for (int i = 0; i < _values.Length; i++)
             {
-                Runtime.Notify("in for loop2");
                 _totalFees[i] = calcTradeFee(_values[i], _feeIndexes[i]);
             }
             if (_totalFees.Length <= 0)
             {
-                Runtime.Notify(7);
                 return empty;
             }
-            Runtime.Notify(_values.Length, _totalFees.Length, _totalFees, _values);
             if (_values.Length != _totalFees.Length)
             {
-                Runtime.Notify(8);
                 return empty;
             }
-            Runtime.Notify(9);
             return _totalFees;
         }
         public static bool AddOwner(byte[] _newOwner)//OnlyApprover
@@ -335,18 +417,14 @@ namespace newNeo
         public static bool extendVault(BigInteger endTime)
         {
             byte[] vaultSealed = (Storage.Get(Storage.CurrentContext, "vaultSealed"));
-            Runtime.Notify(new BigInteger(vaultSealed));
 
             byte[] _startTime = (Storage.Get(Storage.CurrentContext, "startTime"));
             byte[] _endTime = (Storage.Get(Storage.CurrentContext, "endTime"));
-            BigInteger _currTime = 600;// Runtime.Time;
-            Runtime.Notify(_startTime, _endTime, _currTime, endTime);
+            BigInteger _currTime = 20;// Runtime.Time;
             if (endTime >= new BigInteger(_startTime) && new BigInteger(vaultSealed) != 1 && endTime >= _currTime && new BigInteger(_startTime) <= _currTime)
             {
-                Runtime.Notify("_start if");
                 Storage.Put(Storage.CurrentContext, "endTime", endTime);
                 Storage.Put(Storage.CurrentContext, "isVaultOpened", 1);
-                Runtime.Notify("end if");
                 return true;
             }
             return false;
@@ -357,7 +435,6 @@ namespace newNeo
             byte[] isVaultOpened = (Storage.Get(Storage.CurrentContext, "isVaultOpened"));
             if (new BigInteger(vaultSealed) != 1 && new BigInteger(isVaultOpened) == 1)
             {
-                Runtime.Notify("is");
                 Storage.Put(Storage.CurrentContext, "isVaultOpened", 2);
                 //should check for Runtime.Time
                 Storage.Put(Storage.CurrentContext, "endTime", Runtime.Time);
@@ -367,27 +444,21 @@ namespace newNeo
         }
         public static bool storeInVault(byte[] orderHash, byte[] orderID)
         {
-            Runtime.Notify("beginning");
             byte[] vaultSealed = (Storage.Get(Storage.CurrentContext, "vaultSealed"));
             byte[] isVaultOpened = (Storage.Get(Storage.CurrentContext, "isVaultOpened"));
 
             byte[] _startTime = (Storage.Get(Storage.CurrentContext, "startTime"));
             byte[] _endTime = (Storage.Get(Storage.CurrentContext, "endTime"));
-            Runtime.Notify("entering if");
-            BigInteger _currTime = 150;// Runtime.Time;
+            BigInteger _currTime = 50;// Runtime.Time;
             if (new BigInteger(vaultSealed) != 1 && new BigInteger(isVaultOpened) == 1 && new BigInteger(_endTime) > new BigInteger(_startTime) && new BigInteger(_startTime) <= _currTime && new BigInteger(_endTime) >= _currTime)
             {
-                Runtime.Notify("in if");
                 byte[] _orderHashKey = getKey(orderHash, "orderHash");
                 byte[] _orderIDKey = getKey(orderID, "orderId");
-                Runtime.Notify("middle");
                 BigInteger _count = new BigInteger(Storage.Get(Storage.CurrentContext, "orderCount"));
                 _count = _count + 1;
-                Runtime.Notify("increamented", _count);
                 Storage.Put(Storage.CurrentContext, _orderHashKey, 1);
                 Storage.Put(Storage.CurrentContext, _orderIDKey, 1);
                 Storage.Put(Storage.CurrentContext, "orderCount", _count);
-                Runtime.Notify(_orderHashKey, _orderIDKey);
                 return true;
             }
             return false;
@@ -397,7 +468,6 @@ namespace newNeo
             byte[] vaultSealed = (Storage.Get(Storage.CurrentContext, "vaultSealed"));
             if (new BigInteger(vaultSealed) != 1)
             {
-                Runtime.Notify("111 one hudred and eleven");
                 Storage.Put(Storage.CurrentContext, "vaultSealed", 1);
                 Storage.Put(Storage.CurrentContext, "isVaultOpened", 2);
                 //Runtime.Time
@@ -415,89 +485,66 @@ namespace newNeo
             bool result = false;
             byte[] _orderHashKey = getKey(_hash, "orderHash");
             byte[] _orderIDKey = getKey(_orderID, "orderId");
-            Runtime.Notify(_orderHashKey, _orderIDKey);
             BigInteger isHashPresent = Neo.SmartContract.Framework.Helper.AsBigInteger(Storage.Get(Storage.CurrentContext, _orderHashKey));
             BigInteger isOrderPresent = Neo.SmartContract.Framework.Helper.AsBigInteger(Storage.Get(Storage.CurrentContext, _orderIDKey));
-            Runtime.Notify(isHashPresent, isOrderPresent);
             if (isHashPresent == 1 && isOrderPresent == 1)
             {
-                Runtime.Notify("in if");
                 result = true;
             }
             return result;
         }
         public static bool updateVault(byte[] newOwer)
         {
-            Runtime.Notify(1);
             byte[] _approver = Storage.Get(Storage.CurrentContext, "approver");
             byte[] addr = new byte[] { };
-            Runtime.Notify(2);
             if (newOwer == addr && _approver == newOwer)
                 return false;
-            Runtime.Notify(3);
             sealVault();
-            Runtime.Notify(4);
             Storage.Put(Storage.CurrentContext, "vaultSealed", 2);
             Storage.Put(Storage.CurrentContext, "isVaultOpened", 2);
-            Runtime.Notify(5);
             byte[] newOwner = getKey(newOwer, "Owner");
             Storage.Put(Storage.CurrentContext, newOwner, 1);
-            Runtime.Notify(6);
             //Storage.Put(Storage.CurrentContext, "approver", newOwer);
             return true;
         }
+
         //updateExConfig
         public static bool updateWallet(byte[] _wallet)
         {
             Storage.Put(Storage.CurrentContext, "wallet", _wallet);
             return true;
         }
-        public static bool isOrderSigned(byte[] _msgHash, BigInteger v, byte[] r, byte[] s, byte[] _signer)
-        {
-            return false;// ecverify(_msgHash, v, r, s, _signer);
-        }
+        
         public static bool validExchangeFee(byte[] _sellerFeeToken, byte[] _buyerFeeToken, BigInteger _sellerFeeValue, BigInteger _buyerFeeValue)
         {
             byte[] addr = new byte[] { };
-            Runtime.Notify("entering in if...");
             if (_sellerFeeToken == addr || _buyerFeeToken == addr || _sellerFeeValue <= 0 || _buyerFeeValue <= 0)
             {
-                Runtime.Notify("in if");
                 return false;
             }
             return true;
         }
         public static byte[] getTwoWayOrderHash(Object[] _sellerTokens, Object[] _buyerTokens, BigInteger[] _sellerValues, BigInteger[] _buyerValues, Object[] _orderAddresses, BigInteger[] _orderValues, byte[] _orderId)
         {
-            Runtime.Notify("func invoking");
             byte[] _sellerHash = getOrderHash(_sellerTokens, _sellerValues, _orderValues[3], _orderValues[0], (byte[])_orderAddresses[3], (byte[])_orderAddresses[0], (byte[])_orderAddresses[1], _orderId);
-            Runtime.Notify(1);
             byte[] _buyerHash = getOrderHash(_buyerTokens, _buyerValues, _orderValues[4], _orderValues[1], (byte[])_orderAddresses[4], (byte[])_orderAddresses[0], (byte[])_orderAddresses[2], _orderId);
-            Runtime.Notify(2);
             byte[] Hash = _sellerHash.Concat(_buyerHash).Concat(_orderId);
-            Runtime.Notify("ret");
+
             return Hash256(_sellerHash.Concat(_buyerHash).Concat(_orderId));
         }
         public static byte[] getOrderHash(Object[] _tokens, BigInteger[] _counts, BigInteger _pValue, BigInteger _fValue, byte[] _feeToken, byte[] _maker, byte[] _signer, byte[] _orderID)
         {
-            Runtime.Notify(0);
             byte[] bytes1 = (byte[])_tokens[0];
-            Runtime.Notify("10");
+
             for (int i = 1; i < _tokens.Length; i++)
             {
-                Runtime.Notify(11);
                 bytes1 = bytes1.Concat((byte[])_tokens[i]);
-                Runtime.Notify(12);
             }
             byte[] bytes2 = Neo.SmartContract.Framework.Helper.AsByteArray(_counts[0]);
-            Runtime.Notify(13);
             for (int i = 1; i < _counts.Length; i++)
             {
-                Runtime.Notify(14);
                 bytes2 = bytes2.Concat(Neo.SmartContract.Framework.Helper.AsByteArray(_counts[i]));
-                Runtime.Notify(15);
             }
-            Runtime.Notify(16);
             return getHash(bytes1, bytes2, Neo.SmartContract.Framework.Helper.AsByteArray(_pValue), Neo.SmartContract.Framework.Helper.AsByteArray(_fValue), _feeToken, _maker, _signer, _orderID);
         }
         private static byte[] getHash(byte[] _token, byte[] _counts, byte[] _pvalue, byte[] _fvalue, byte[] _feeToken, byte[] _maker, byte[] _signer, byte[] _orderId)
@@ -510,57 +557,38 @@ namespace newNeo
         {
             //include code for signature check
             byte[] index = getKey(_originator, "authorized");
-            Runtime.Notify(1);
             byte[] authorized = (Storage.Get(Storage.CurrentContext, index));
             byte[] _isActivated = (Storage.Get(Storage.CurrentContext, "activated"));
-            Runtime.Notify(2);
             if (new BigInteger(_isActivated) != 1 || _orderValues[2] >= 10 && new BigInteger(authorized) != 1)//checkwitness[_orderAddresses of 1 and 2] and //Runtime.Time
                 return false;
-            Runtime.Notify(3);
             byte[] _sellerHash = getOrderHash(_sellerTokens, _sellerValues, _orderValues[3], _orderValues[0], (byte[])_orderAddresses[3], (byte[])_orderAddresses[0], (byte[])_orderAddresses[1], _orderID);
-            Runtime.Notify(4);
             byte[] _buyerHash = getOrderHash(_buyerTokens, _buyerValues, _orderValues[4], _orderValues[1], (byte[])_orderAddresses[4], (byte[])_orderAddresses[0], (byte[])_orderAddresses[2], _orderID);
-            Runtime.Notify(5);
             if (orderExists(Hash256(_sellerHash.Concat(_buyerHash).Concat(_orderID)), _orderID))
             {
-                Runtime.Notify(6);
                 return false;
             }
             if (!validExchangeFee((byte[])_orderAddresses[3], (byte[])_orderAddresses[4], _orderValues[0], _orderValues[1]))
             {
-                Runtime.Notify(7);
                 return false;
             }
             _orderValues[0] = calcTradeFee((int)_orderValues[0], (int)_orderAddresses[3]);
             _orderValues[1] = calcTradeFee((int)_orderValues[1], (int)_orderAddresses[4]);
-            Runtime.Notify(_orderValues[0],_orderValues[1]);
-            Runtime.Notify("eight");
             if (_orderValues[0] <= 0 && _orderValues[1] <= 0) return false;
 
-            Runtime.Notify(9);
             if (_orderAddresses[0] == new byte[] { 0x0 } && _orderAddresses[1] == new byte[] { 0x0 } && _orderAddresses[2] == new byte[] { 0x0 } && _orderAddresses[1] == _orderAddresses[2]) return false; //buyer
 
-            Runtime.Notify(10);
             if (_sellerTokens.Length <= 0 && _sellerTokens.Length != _sellerValues.Length) return false;
 
-            Runtime.Notify(11);
             if (_buyerTokens.Length <= 0 && _buyerTokens.Length != _buyerValues.Length) return false;
 
-            Runtime.Notify(12);
             //need to check
             if (!validateAuthorization(_sellerTokens, _buyerTokens, _sellerValues, _buyerValues, _orderAddresses, _orderValues))
             {
-                Runtime.Notify(13);
                 return false;
             }
-            Runtime.Notify("CHECK1");
             bool result=transferTokens(_sellerTokens, _buyerTokens, _sellerValues, _buyerValues, _orderAddresses, _orderValues);
-            Runtime.Notify(14);
             if (result != true) return false;
-            Runtime.Notify("what");
             return storeInVault(Hash256(_sellerHash.Concat(_buyerHash).Concat(_orderID)), _orderID);
-            Runtime.Notify(15);
-            return false;
         }
         public static bool transferTokens(Object[] _sellerTokens, Object[] _buyerTokens, BigInteger[] _sellerValues, BigInteger[] _buyerValues, Object[] _orderAddresses, BigInteger[] _orderValues)
         {
@@ -571,31 +599,37 @@ namespace newNeo
             {
                 arg = new Object[] { _orderAddresses[1], _orderAddresses[2], _sellerValues[i] };
                 token = (byte[])_sellerTokens[i];
-                //var sellerContract = (NEP5Contract)token.ToDelegate();
-                //sellerContract("transfer", arg);
+                //check
+                var sellerContract = (NEP5Contract)token.ToDelegate();
+                sellerContract("transfer", arg);
             }
             len = _buyerTokens.Length;
             for (int i = 0; i < len; i++)
             {
                 token = (byte[])_buyerTokens[i];
                 arg = new Object[] { _orderAddresses[2], _orderAddresses[1], _buyerValues[i] };
-                //var buyerContract = (NEP5Contract)token.ToDelegate();
-                //buyerContract("transfer", arg);
+                //check
+                var buyerContract = (NEP5Contract)token.ToDelegate();
+                buyerContract("transfer", arg);
             }
             //exchange fee
             byte[] wallet = Storage.Get(Storage.CurrentContext, "wallet");
 
             token = (byte[])_orderAddresses[3];
             arg = new Object[] { _orderAddresses[1], wallet, _orderValues[0] };
-            //var Contract = (NEP5Contract)token.ToDelegate();
-            //Contract("transfer", arg);
+            //check
+            var Contract = (NEP5Contract)token.ToDelegate();
+            Contract("transfer", arg);
 
             token = (byte[])_orderAddresses[4];
             arg = new object[] { _orderAddresses[2], wallet, _orderValues[1] };
-            //Contract = (NEP5Contract)token.ToDelegate();
-            //Contract("transfer", arg);
+            //check
+            Contract = (NEP5Contract)token.ToDelegate();
+            Contract("transfer", arg);
+
             return true;
         }
+
         public static bool orderExists(byte[] _hash, byte[] _orderID)
         {
             if (orderLocated(_hash, _orderID))
@@ -604,20 +638,21 @@ namespace newNeo
             }
             return false;
         }
+
         public static bool validateAuthorization(object[] _sellerTokens, object[] _buyerTokens, BigInteger[] _sellerValues, BigInteger[] _buyerValues, Object[] _orderAddresses, BigInteger[] _orderValues)
         {
             var arg = new Object[] { _orderAddresses[2], (byte[])ExecutionEngine.ExecutingScriptHash };
             byte[] token = (byte[])_orderAddresses[4];
             //check contract invoke
-            //var Contract = (NEP5Contract)token.ToDelegate();
-            var result = (BigInteger)50;// Contract("allowance", arg);
+            var Contract = (NEP5Contract)token.ToDelegate();
+            var result = (BigInteger) Contract("allowance", arg);
             if (result <= _orderValues[1]) return false;
 
             arg = new Object[] { _orderAddresses[1], (byte[])ExecutionEngine.ExecutingScriptHash };
             token = (byte[])_orderAddresses[3];
             //Should check
-            //Contract = (NEP5Contract)token.ToDelegate();
-            //result = (BigInteger)Contract("allowance", arg);
+            Contract = (NEP5Contract)token.ToDelegate();
+            result = (BigInteger)Contract("allowance", arg);
 
             if (result <= _orderValues[0]) return false;
 
@@ -626,8 +661,8 @@ namespace newNeo
                 arg = new Object[] { _orderAddresses[2], (byte[])ExecutionEngine.ExecutingScriptHash };
                 token = (byte[])_buyerTokens[i];
                 //Should check
-                //var buyertoken = (NEP5Contract)token.ToDelegate();
-                //result = (BigInteger)buyertoken("allowance", arg);
+                var buyertoken = (NEP5Contract)token.ToDelegate();
+                result = (BigInteger)buyertoken("allowance", arg);
                 if (result <= _buyerValues[i]) return false;
             }
             for (uint i = 0; i < _sellerTokens.Length; i++)
@@ -635,12 +670,16 @@ namespace newNeo
                 arg = new Object[] { _orderAddresses[1], (byte[])ExecutionEngine.ExecutingScriptHash };
                 token = (byte[])_sellerTokens[i];
                 //check
-                //var sellertoken = (NEP5Contract)token.ToDelegate();
-                //result = (BigInteger)sellertoken("allowance", arg);
+                var sellertoken = (NEP5Contract)token.ToDelegate();
+                result = (BigInteger)sellertoken("allowance", arg);
 
                 if (result <= _sellerValues[i]) return false;
             }
             return true;
         }
+        /*public static bool isOrderSigned(byte[] _msgHash, BigInteger v, byte[] r, byte[] s, byte[] _signer)
+        {
+            return false;// ecverify(_msgHash, v, r, s, _signer);
+        }*/
     }
 }
