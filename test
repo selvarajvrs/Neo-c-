@@ -712,9 +712,5 @@ namespace newNeo
             result=Runtime.CheckWitness(_owner);
             return result;
         }
-        /*public static bool isOrderSigned(byte[] _msgHash, BigInteger v, byte[] r, byte[] s, byte[] _signer)
-        {
-            return false;// ecverify(_msgHash, v, r, s, _signer);
-        }*/
     }
 }
