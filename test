@@ -248,6 +248,7 @@ namespace newNeo
         }
         public static bool deploy(byte[] originator)
         {
+            Runtime.Notify(originator);
             Storage.Put(Storage.CurrentContext, "approver", originator);
             Storage.Put(Storage.CurrentContext, "vaultSealed", 2);
             Storage.Put(Storage.CurrentContext, "isVaultOpened", 2);
@@ -256,14 +257,17 @@ namespace newNeo
             Storage.Put(Storage.CurrentContext, "orderCount", 0);
             Storage.Put(Storage.CurrentContext, "activated", 1);
             Storage.Put(Storage.CurrentContext, "wallet", originator);
+            RuntimeNotify("deploy successful");
             return true;
         }
         public static bool changeApprover(byte[] originator, byte[] newApprover)//onlyApprover 
         {
+            Runtime.Notify(originator,newApprover);
             byte[] approver = Storage.Get(Storage.CurrentContext, "approver");
             if (newApprover != new byte[] { 0 })
             {
                 Storage.Put(Storage.CurrentContext, "approver", newApprover);
+                Runtime.Notify("successful");
                 return true;
             }
             return false;
@@ -271,19 +275,24 @@ namespace newNeo
 
         private static bool addAuthorizedAddress(byte[] originator, byte[] appIntegrator)  //onlyApprover 
         {
+            Runtime.Notify(originator,appIntegrator);
             byte[] index = getKey(appIntegrator, "authorized");
             Storage.Put(Storage.CurrentContext, index, 1);
+            Runtime.Notify("successful");
             return true;
         }
 
         private static bool removeAuthorizedAddress(byte[] originator, byte[] appIntegrator) //onlyApprover 
         {
+            Runtime.Notify(originator,appIntegrator);
             byte[] index = getKey(appIntegrator, "authorized");
             Storage.Delete(Storage.CurrentContext, index);
+            Runtime.Notify("successful");
             return true;
         }
         public static Object updateFeeSchedule(BigInteger _baseTokenFee, BigInteger _etherFee, BigInteger _normalTokenFee)
         {
+            Runtime.Notify(_baseTokenFee,_etherFee,_normalTokenFee);
             if (_baseTokenFee < 0 && _baseTokenFee > 1 * 1) //<= 1*1 ether
             {
                 return false;
@@ -299,22 +308,30 @@ namespace newNeo
             Storage.Put(Storage.CurrentContext, "BaseTokenFee", _baseTokenFee);
             Storage.Put(Storage.CurrentContext, "EtherTokenFee", _etherFee);
             Storage.Put(Storage.CurrentContext, "NormalTokenFee", _normalTokenFee);
+            Runtime.Notify("success");
             return true;
         }
         public static Boolean verify(byte[] _owner)
         {
+            Runtime.Notify(_owner);
             bool result = Runtime.CheckWitness(_owner);
             return result;
         }
+
+        /*_feeIndex will be 0 for BaseTokenFee
+         * _feeIndex will be 1 for EtherTokenFee
+         * _feeIndex will be 2 for NormalTokenFee*/
         public static int calcTradeFee(int _value, int _feeIndex)
         {
             int tokenFees = 0;
             if (_feeIndex < 0 && _feeIndex > 2)
             {
+                Runtime.Notify("wrong feeIndex");
                 return 0;
             }
             if (_value < 0)
             {
+                Runtime.Notify("value cannot be zero");
                 return 0;
             }
             if (_feeIndex == 0)
@@ -334,11 +351,13 @@ namespace newNeo
                 return 0;
             }
 
+            Runtime.Notify(_value,_feeIndex);
             int _totalFees = (_value * (tokenFees)) / (1);//1 ether
             if (_totalFees < 0)
             {
                 return 0;
             }
+            Runtime.Notify("Success");
             return _totalFees;
         }
         public static int[] calcTradeFeeMulti(uint[] __values, int[] __feeIndexes)
@@ -376,6 +395,7 @@ namespace newNeo
             {
                 return empty;
             }
+            Runtime.Notify("Success");
             return _totalFees;
         }
         public static bool AddOwner(byte[] _newOwner)//OnlyApprover
@@ -383,12 +403,14 @@ namespace newNeo
             byte[] newOwner = getKey(_newOwner, "Owner");
             Storage.Put(Storage.CurrentContext, newOwner, 1);
             //vaultOwners.push(newOwner); 
+            Runtime.Notify("Success");
             return true;
         }
         public static bool removeOwner(byte[] _owner)//OnlyApprover
         {
             byte[] newOwner = getKey(_owner, "Owner");
             Storage.Delete(Storage.CurrentContext, newOwner);
+            Runtime.Notify("Success");
             return true;
         }
         public static byte[] getKey(byte[] key1, string key2)
@@ -410,6 +432,7 @@ namespace newNeo
                 Storage.Put(Storage.CurrentContext, "startTime", startTime);
                 Storage.Put(Storage.CurrentContext, "endTime", endTime);
                 Storage.Put(Storage.CurrentContext, "isVaultOpened", 1);
+                Runtime.Notify("Success");
                 return true;
             }
             return false;
@@ -425,6 +448,7 @@ namespace newNeo
             {
                 Storage.Put(Storage.CurrentContext, "endTime", endTime);
                 Storage.Put(Storage.CurrentContext, "isVaultOpened", 1);
+                Runtime.Notify("vault extended");
                 return true;
             }
             return false;
@@ -438,6 +462,7 @@ namespace newNeo
                 Storage.Put(Storage.CurrentContext, "isVaultOpened", 2);
                 //should check for Runtime.Time
                 Storage.Put(Storage.CurrentContext, "endTime", 100);// Runtime.Time);
+                Runtime.Notify("vault closed");
                 return true;
             }
             return false;
@@ -459,6 +484,7 @@ namespace newNeo
                 Storage.Put(Storage.CurrentContext, _orderHashKey, 1);
                 Storage.Put(Storage.CurrentContext, _orderIDKey, 1);
                 Storage.Put(Storage.CurrentContext, "orderCount", newCount);
+                Runtime.Notify("stored in vault");
                 return true;
             }
             return false;
@@ -468,10 +494,11 @@ namespace newNeo
             byte[] vaultSealed = (Storage.Get(Storage.CurrentContext, "vaultSealed"));
             if (new BigInteger(vaultSealed) != 1)
             {
-                Storage.Put(Storage.CurrentContext, "vaultSealed", (BigInteger) 1);
+                Storage.Put(Storage.CurrentContext, "vaultSealed", (BigInteger)1);
                 Storage.Put(Storage.CurrentContext, "isVaultOpened", (BigInteger)2);
                 //Runtime.Time
                 Storage.Put(Storage.CurrentContext, "endTime", 100);// Runtime.Time);
+                Runtime.Notify("vault sealed");
                 return true;
             }
             return false;
@@ -553,7 +580,7 @@ namespace newNeo
             return Hash256(bytes);
         }
         public static bool OneWayFullfillPO(byte[] _originator, Object[] _sellerTokens, Object[] _buyerTokens, BigInteger[] _sellerValues, BigInteger[] _buyerValues, Object[] _orderAddresses,
-            BigInteger[] _orderValues,  byte[] _orderID)
+            BigInteger[] _orderValues, byte[] _orderID)
         {
             //include code for signature check
             byte[] index = getKey(_originator, "authorized");
@@ -565,10 +592,12 @@ namespace newNeo
             byte[] _buyerHash = getOrderHash(_buyerTokens, _buyerValues, _orderValues[4], _orderValues[1], (byte[])_orderAddresses[4], (byte[])_orderAddresses[0], (byte[])_orderAddresses[2], _orderID);
             if (orderExists(Hash256(_sellerHash.Concat(_buyerHash).Concat(_orderID)), _orderID))
             {
+                Runtime.Notify("order exists");
                 return false;
             }
             if (!validExchangeFee((byte[])_orderAddresses[3], (byte[])_orderAddresses[4], _orderValues[0], _orderValues[1]))
             {
+                Runtime.Notify("fee is not valid");
                 return false;
             }
             _orderValues[0] = calcTradeFee((int)_orderValues[0], (int)_orderAddresses[3]);
