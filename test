@@ -257,7 +257,7 @@ namespace newNeo
             Storage.Put(Storage.CurrentContext, "orderCount", 0);
             Storage.Put(Storage.CurrentContext, "activated", 1);
             Storage.Put(Storage.CurrentContext, "wallet", originator);
-            RuntimeNotify("deploy successful");
+            Runtime.Notify("deploy successful");
             return true;
         }
         public static bool changeApprover(byte[] originator, byte[] newApprover)//onlyApprover 
@@ -706,7 +706,7 @@ namespace newNeo
             }
             return true;
         }
-        public static bool verify(byte[] _owner)
+        public static bool Verify(byte[] _owner)
         {
             bool result;
             result=Runtime.CheckWitness(_owner);
