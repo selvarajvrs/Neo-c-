@@ -263,7 +263,7 @@ namespace newNeo
             return true;
         }
         
-        //@param originator who invoking and newApprover address to approve
+        //@params originator who invoking and newApprover address to approve
         public static bool changeApprover(byte[] originator, byte[] newApprover)//onlyApprover 
         {
             Runtime.Notify(originator,newApprover);
@@ -277,7 +277,7 @@ namespace newNeo
             return false;
         }
 
-        //@param originator who invoking, appIntegrator address to authorize
+        //@params originator who invoking, appIntegrator address to authorize
         private static bool addAuthorizedAddress(byte[] originator, byte[] appIntegrator)  //onlyApprover 
         {
             Runtime.Notify(originator,appIntegrator);
@@ -287,7 +287,7 @@ namespace newNeo
             return true;
         }
 
-        //@param originator who invoking and appIntegrator is address to remove authorization
+        //@params originator who invoking and appIntegrator is address to remove authorization
         private static bool removeAuthorizedAddress(byte[] originator, byte[] appIntegrator) //onlyApprover 
         {
             Runtime.Notify(originator,appIntegrator);
@@ -297,7 +297,7 @@ namespace newNeo
             return true;
         }
         
-        //@param token trade fees to update for all type of tokens
+        //@params token trade fees to update for all type of tokens
         public static Object updateFeeSchedule(BigInteger _baseTokenFee, BigInteger _etherFee, BigInteger _normalTokenFee)
         {
             Runtime.Notify(_baseTokenFee,_etherFee,_normalTokenFee);
@@ -328,7 +328,7 @@ namespace newNeo
             return result;
         }
 
-        /*_feeIndex will be 0 for BaseTokenFee
+        /@params *_feeIndex will be 0 for BaseTokenFee
          * _feeIndex will be 1 for EtherTokenFee
          * _feeIndex will be 2 for NormalTokenFee*/
         public static int calcTradeFee(int _value, int _feeIndex)
@@ -371,7 +371,7 @@ namespace newNeo
             return _totalFees;
         }
         
-        // calculate trade fee for multiple token and value pairs
+        //calculate trade fee for multiple token and value pairs
         public static int[] calcTradeFeeMulti(uint[] __values, int[] __feeIndexes)
         {
             int[] _values = new int[__values.Length];
@@ -437,7 +437,7 @@ namespace newNeo
             return key1.Concat(Neo.SmartContract.Framework.Helper.AsByteArray(key2));
         }
         
-        /@param stTime is the start time of trading and edTime will be endtime when the vault closed
+        /@params stTime is the start time of trading and edTime will be endtime when the vault closed
         public static bool openVault(int stTime, int edTime)
         {
             BigInteger startTime = (BigInteger)stTime;
@@ -492,7 +492,7 @@ namespace newNeo
             return false;
         }
         
-        /@param orderHAsh is sha256 hash and orderID is count number for number of orders
+        /@params orderHAsh is sha256 hash and orderID is count number for number of orders
         public static bool storeInVault(byte[] orderHash, byte[] orderID)
         {
             byte[] vaultSealed = (Storage.Get(Storage.CurrentContext, "vaultSealed"));
@@ -536,7 +536,7 @@ namespace newNeo
             return Storage.Get(Storage.CurrentContext, "orderCount");
         }
         
-        /@param order hash and id of the order passed
+        /@params order hash and id of the order passed
         public static bool orderLocated(byte[] _hash, byte[] _orderID)
         {
             bool result = false;
@@ -574,7 +574,7 @@ namespace newNeo
             return true;
         }
 
-        /*@param_sellerFeeToken seller token script hash,
+        /*@params _sellerFeeToken seller token script hash,
         _buyerFeeToken buyer token scripthash,
         _sellerFeeVaule fee of selling token
         _buyerFeeValue fee of buying token*/
@@ -588,7 +588,7 @@ namespace newNeo
             return true;
         }
         
-        /*_sellerTokens selling tokens
+        /*@params _sellerTokens selling tokens
         _buyerTokens buying tokens
         _sellerValues selling amounts
         _buyerValues buying token amount
@@ -605,7 +605,7 @@ namespace newNeo
             return Hash256(_sellerHash.Concat(_buyerHash).Concat(_orderId));
         }
         
-        /*_tokens _tokens of a portfolio
+        /*@params _tokens _tokens of a portfolio
         _counts _counts of each asset in the given portfolio
         _pValue is the total portfolio value in ether
         _fValue is total value of the order in fee token selected by the caller
@@ -635,7 +635,7 @@ namespace newNeo
             return Hash256(bytes);
         }
         
-        /*
+        /*@params
         _sellerTokens selleing portfolio tokens
         _buyerTokens buying tokens
         _sellerValues selling porfolio token amounts
@@ -689,7 +689,7 @@ namespace newNeo
             return storeInVault(Hash256(_sellerHash.Concat(_buyerHash).Concat(_orderID)), _orderID);
         }
         
-        /*
+        /*@params
         _sellerTokens selleing portfolio tokens
         _buyerTokens buying tokens
         _sellerValues selling porfolio token amounts
@@ -746,7 +746,7 @@ namespace newNeo
             return false;
         }
 
-        /*_sellerTokens selleing portfolio tokens
+        /*@params _sellerTokens selleing portfolio tokens
         _buyerTokens buying tokens
         _sellerValues selling porfolio token amounts
         _buyerValues token amounts for buying portfolio
