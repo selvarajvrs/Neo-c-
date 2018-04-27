@@ -246,6 +246,8 @@ namespace newNeo
             Runtime.Notify("Not matching...");
             return false;
         }
+        
+        //@param originator who invoking
         public static bool deploy(byte[] originator)
         {
             Runtime.Notify(originator);
@@ -260,6 +262,8 @@ namespace newNeo
             Runtime.Notify("deploy successful");
             return true;
         }
+        
+        //@param originator who invoking and newApprover address to approve
         public static bool changeApprover(byte[] originator, byte[] newApprover)//onlyApprover 
         {
             Runtime.Notify(originator,newApprover);
@@ -273,6 +277,7 @@ namespace newNeo
             return false;
         }
 
+        //@param originator who invoking, appIntegrator address to authorize
         private static bool addAuthorizedAddress(byte[] originator, byte[] appIntegrator)  //onlyApprover 
         {
             Runtime.Notify(originator,appIntegrator);
@@ -282,6 +287,7 @@ namespace newNeo
             return true;
         }
 
+        //@param originator who invoking and appIntegrator is address to remove authorization
         private static bool removeAuthorizedAddress(byte[] originator, byte[] appIntegrator) //onlyApprover 
         {
             Runtime.Notify(originator,appIntegrator);
@@ -290,6 +296,8 @@ namespace newNeo
             Runtime.Notify("successful");
             return true;
         }
+        
+        //@param token trade fees to update for all type of tokens
         public static Object updateFeeSchedule(BigInteger _baseTokenFee, BigInteger _etherFee, BigInteger _normalTokenFee)
         {
             Runtime.Notify(_baseTokenFee,_etherFee,_normalTokenFee);
@@ -311,6 +319,8 @@ namespace newNeo
             Runtime.Notify("success");
             return true;
         }
+
+        //verifies owner
         public static Boolean verify(byte[] _owner)
         {
             Runtime.Notify(_owner);
@@ -360,6 +370,8 @@ namespace newNeo
             Runtime.Notify("Success");
             return _totalFees;
         }
+        
+        // calculate trade fee for multiple token and value pairs
         public static int[] calcTradeFeeMulti(uint[] __values, int[] __feeIndexes)
         {
             int[] _values = new int[__values.Length];
@@ -398,6 +410,8 @@ namespace newNeo
             Runtime.Notify("Success");
             return _totalFees;
         }
+        
+        //@param _newOwner will be address to adding in owners list
         public static bool AddOwner(byte[] _newOwner)//OnlyApprover
         {
             byte[] newOwner = getKey(_newOwner, "Owner");
@@ -406,6 +420,8 @@ namespace newNeo
             Runtime.Notify("Success");
             return true;
         }
+        
+        //@param _owner will be address to remove in owners list
         public static bool removeOwner(byte[] _owner)//OnlyApprover
         {
             byte[] newOwner = getKey(_owner, "Owner");
@@ -413,10 +429,15 @@ namespace newNeo
             Runtime.Notify("Success");
             return true;
         }
+        
+        /* this function used to get the keys for storing and retrieving from contract
+        persistent storage*/
         public static byte[] getKey(byte[] key1, string key2)
         {
             return key1.Concat(Neo.SmartContract.Framework.Helper.AsByteArray(key2));
         }
+        
+        /@param stTime is the start time of trading and edTime will be endtime when the vault closed
         public static bool openVault(int stTime, int edTime)
         {
             BigInteger startTime = (BigInteger)stTime;
@@ -437,6 +458,8 @@ namespace newNeo
             }
             return false;
         }
+        
+       /@param endTime will be unix timestamp for extending the vault
         public static bool extendVault(BigInteger endTime)
         {
             byte[] vaultSealed = (Storage.Get(Storage.CurrentContext, "vaultSealed"));
@@ -453,6 +476,7 @@ namespace newNeo
             }
             return false;
         }
+        
         public static bool closeVault()
         {
             byte[] vaultSealed = (Storage.Get(Storage.CurrentContext, "vaultSealed"));
@@ -467,6 +491,8 @@ namespace newNeo
             }
             return false;
         }
+        
+        /@param orderHAsh is sha256 hash and orderID is count number for number of orders
         public static bool storeInVault(byte[] orderHash, byte[] orderID)
         {
             byte[] vaultSealed = (Storage.Get(Storage.CurrentContext, "vaultSealed"));
@@ -489,6 +515,7 @@ namespace newNeo
             }
             return false;
         }
+        
         public static bool sealVault()
         {
             byte[] vaultSealed = (Storage.Get(Storage.CurrentContext, "vaultSealed"));
@@ -503,10 +530,13 @@ namespace newNeo
             }
             return false;
         }
+        
         public static byte[] getNumberOfOrders()
         {
             return Storage.Get(Storage.CurrentContext, "orderCount");
         }
+        
+        /@param order hash and id of the order passed
         public static bool orderLocated(byte[] _hash, byte[] _orderID)
         {
             bool result = false;
@@ -520,6 +550,8 @@ namespace newNeo
             }
             return result;
         }
+        
+        /@ param new owner address passed to change old authorizations
         public static bool updateVault(byte[] newOwer)
         {
             byte[] _approver = Storage.Get(Storage.CurrentContext, "approver");
@@ -542,6 +574,10 @@ namespace newNeo
             return true;
         }
 
+        /*@param_sellerFeeToken seller token script hash,
+        _buyerFeeToken buyer token scripthash,
+        _sellerFeeVaule fee of selling token
+        _buyerFeeValue fee of buying token*/
         public static bool validExchangeFee(byte[] _sellerFeeToken, byte[] _buyerFeeToken, BigInteger _sellerFeeValue, BigInteger _buyerFeeValue)
         {
             byte[] addr = new byte[] { };
@@ -551,6 +587,15 @@ namespace newNeo
             }
             return true;
         }
+        
+        /*_sellerTokens selling tokens
+        _buyerTokens buying tokens
+        _sellerValues selling amounts
+        _buyerValues buying token amount
+        _orderAddresses contains maker, seller, buyer, seller fee token, and buyer fee token addresses
+        _orderValues contains values for seller fee, buyer fee, expiration time stamp, and salt used for Hash generation 
+        _orderId id for order count
+        */
         public static byte[] getTwoWayOrderHash(Object[] _sellerTokens, Object[] _buyerTokens, BigInteger[] _sellerValues, BigInteger[] _buyerValues, Object[] _orderAddresses, BigInteger[] _orderValues, byte[] _orderId)
         {
             byte[] _sellerHash = getOrderHash(_sellerTokens, _sellerValues, _orderValues[3], _orderValues[0], (byte[])_orderAddresses[3], (byte[])_orderAddresses[0], (byte[])_orderAddresses[1], _orderId);
@@ -559,6 +604,15 @@ namespace newNeo
 
             return Hash256(_sellerHash.Concat(_buyerHash).Concat(_orderId));
         }
+        
+        /*_tokens _tokens of a portfolio
+        _counts _counts of each asset in the given portfolio
+        _pValue is the total portfolio value in ether
+        _fValue is total value of the order in fee token selected by the caller
+        _feeToken in which exchange fee to be paid
+        _maker creator of the portfolio
+        _signer owner of the order 
+        _orderID uniquly identifies the order in DB and creates link with contract*/
         public static byte[] getOrderHash(Object[] _tokens, BigInteger[] _counts, BigInteger _pValue, BigInteger _fValue, byte[] _feeToken, byte[] _maker, byte[] _signer, byte[] _orderID)
         {
             byte[] bytes1 = (byte[])_tokens[0];
@@ -574,11 +628,26 @@ namespace newNeo
             }
             return getHash(bytes1, bytes2, Neo.SmartContract.Framework.Helper.AsByteArray(_pValue), Neo.SmartContract.Framework.Helper.AsByteArray(_fValue), _feeToken, _maker, _signer, _orderID);
         }
+        
         private static byte[] getHash(byte[] _token, byte[] _counts, byte[] _pvalue, byte[] _fvalue, byte[] _feeToken, byte[] _maker, byte[] _signer, byte[] _orderId)
         {
             var bytes = ExecutionEngine.ExecutingScriptHash.Concat(_token).Concat(_counts).Concat(_pvalue).Concat(_fvalue).Concat(_feeToken).Concat(_maker).Concat(_signer).Concat(_orderId);
             return Hash256(bytes);
         }
+        
+        /*
+        _sellerTokens selleing portfolio tokens
+        _buyerTokens buying tokens
+        _sellerValues selling porfolio token amounts
+        _buyerValues token amounts for buying portfolio
+        _orderAddresses Contains maker, seller, buyer, seller fee token, and buyer fee token addresses
+        _orderValues contains values for seller fee, buyer fee, expiration time stamp
+        _v is an array of v values for buyer ad seller signatures
+        _sr is r part of the seller signature
+        _ss is s part of the seller signature
+        _br is r part of the buyer signature
+        _bs is s part of the buyer signature 
+        _orderID from Database*/
         public static bool OneWayFullfillPO(byte[] _originator, Object[] _sellerTokens, Object[] _buyerTokens, BigInteger[] _sellerValues, BigInteger[] _buyerValues, Object[] _orderAddresses,
             BigInteger[] _orderValues, byte[] _orderID)
         {
@@ -619,6 +688,14 @@ namespace newNeo
             if (result != true) return false;
             return storeInVault(Hash256(_sellerHash.Concat(_buyerHash).Concat(_orderID)), _orderID);
         }
+        
+        /*
+        _sellerTokens selleing portfolio tokens
+        _buyerTokens buying tokens
+        _sellerValues selling porfolio token amounts
+        _buyerValues token amounts for buying portfolio
+        _orderAddresses Contains maker, seller, buyer, seller fee token, and buyer fee token addresses
+        _orderValues contains values for seller fee, buyer fee, expiration time stamp  */
         public static bool transferTokens(Object[] _sellerTokens, Object[] _buyerTokens, BigInteger[] _sellerValues, BigInteger[] _buyerValues, Object[] _orderAddresses, BigInteger[] _orderValues)
         {
             int len = _sellerTokens.Length;
@@ -659,6 +736,7 @@ namespace newNeo
             return true;
         }
 
+        //@params _hash is order hash and _orderID is the id of that order
         public static bool orderExists(byte[] _hash, byte[] _orderID)
         {
             if (orderLocated(_hash, _orderID))
@@ -668,6 +746,12 @@ namespace newNeo
             return false;
         }
 
+        /*_sellerTokens selleing portfolio tokens
+        _buyerTokens buying tokens
+        _sellerValues selling porfolio token amounts
+        _buyerValues token amounts for buying portfolio
+        _orderAddresses Contains maker, seller, buyer, seller fee token, and buyer fee token addresses
+        _orderValues contains values for seller fee, buyer fee, expiration time stamp*/
         public static bool validateAuthorization(object[] _sellerTokens, object[] _buyerTokens, BigInteger[] _sellerValues, BigInteger[] _buyerValues, Object[] _orderAddresses, BigInteger[] _orderValues)
         {
             var arg = new Object[] { _orderAddresses[2], (byte[])ExecutionEngine.ExecutingScriptHash };
