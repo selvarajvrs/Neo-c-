@@ -446,7 +446,7 @@ namespace newNeo
             byte[] isVaultOpened = (Storage.Get(Storage.CurrentContext, "isVaultOpened"));
 
             //should check
-            BigInteger _currTime = 10;// Runtime.Time;
+            BigInteger _currTime = Runtime.Time;
 
             if (new BigInteger(vaultSealed) != 1 && new BigInteger(isVaultOpened) != 1 && (startTime >= _currTime) && (endTime >= _currTime) && (startTime < endTime))
             {
@@ -466,7 +466,7 @@ namespace newNeo
 
             byte[] _startTime = (Storage.Get(Storage.CurrentContext, "startTime"));
             byte[] _endTime = (Storage.Get(Storage.CurrentContext, "endTime"));
-            BigInteger _currTime = 20;// Runtime.Time;
+            BigInteger _currTime = Runtime.Time;
             if (endTime >= new BigInteger(_startTime) && new BigInteger(vaultSealed) != 1 && endTime >= _currTime && new BigInteger(_startTime) <= _currTime)
             {
                 Storage.Put(Storage.CurrentContext, "endTime", endTime);
@@ -485,7 +485,7 @@ namespace newNeo
             {
                 Storage.Put(Storage.CurrentContext, "isVaultOpened", 2);
                 //should check for Runtime.Time
-                Storage.Put(Storage.CurrentContext, "endTime", 100);// Runtime.Time);
+                Storage.Put(Storage.CurrentContext, "endTime", Runtime.Time);
                 Runtime.Notify("vault closed");
                 return true;
             }
@@ -500,7 +500,7 @@ namespace newNeo
 
             byte[] _startTime = (Storage.Get(Storage.CurrentContext, "startTime"));
             byte[] _endTime = (Storage.Get(Storage.CurrentContext, "endTime"));
-            BigInteger _currTime = 50;// Runtime.Time;
+            BigInteger _currTime = Runtime.Time;
             if (new BigInteger(vaultSealed) != 1 && new BigInteger(isVaultOpened) == 1 && new BigInteger(_endTime) > new BigInteger(_startTime) && new BigInteger(_startTime) <= _currTime && new BigInteger(_endTime) >= _currTime)
             {
                 byte[] _orderHashKey = getKey(orderHash, "orderHash");
@@ -524,7 +524,7 @@ namespace newNeo
                 Storage.Put(Storage.CurrentContext, "vaultSealed", (BigInteger)1);
                 Storage.Put(Storage.CurrentContext, "isVaultOpened", (BigInteger)2);
                 //Runtime.Time
-                Storage.Put(Storage.CurrentContext, "endTime", 100);// Runtime.Time);
+                Storage.Put(Storage.CurrentContext, "endTime", Runtime.Time);
                 Runtime.Notify("vault sealed");
                 return true;
             }
