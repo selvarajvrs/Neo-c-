@@ -328,7 +328,7 @@ namespace newNeo
             return result;
         }
 
-        /@params *_feeIndex will be 0 for BaseTokenFee
+        /*@params *_feeIndex will be 0 for BaseTokenFee
          * _feeIndex will be 1 for EtherTokenFee
          * _feeIndex will be 2 for NormalTokenFee*/
         public static int calcTradeFee(int _value, int _feeIndex)
