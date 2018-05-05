@@ -437,7 +437,7 @@ namespace newNeo
             return key1.Concat(Neo.SmartContract.Framework.Helper.AsByteArray(key2));
         }
         
-        /@params stTime is the start time of trading and edTime will be endtime when the vault closed
+        //@params stTime is the start time of trading and edTime will be endtime when the vault closed
         public static bool openVault(int stTime, int edTime)
         {
             BigInteger startTime = (BigInteger)stTime;
@@ -459,7 +459,7 @@ namespace newNeo
             return false;
         }
         
-       /@param endTime will be unix timestamp for extending the vault
+       //@param endTime will be unix timestamp for extending the vault
         public static bool extendVault(BigInteger endTime)
         {
             byte[] vaultSealed = (Storage.Get(Storage.CurrentContext, "vaultSealed"));
@@ -492,7 +492,7 @@ namespace newNeo
             return false;
         }
         
-        /@params orderHAsh is sha256 hash and orderID is count number for number of orders
+        //@params orderHAsh is sha256 hash and orderID is count number for number of orders
         public static bool storeInVault(byte[] orderHash, byte[] orderID)
         {
             byte[] vaultSealed = (Storage.Get(Storage.CurrentContext, "vaultSealed"));
@@ -536,7 +536,7 @@ namespace newNeo
             return Storage.Get(Storage.CurrentContext, "orderCount");
         }
         
-        /@params order hash and id of the order passed
+        //@params order hash and id of the order passed
         public static bool orderLocated(byte[] _hash, byte[] _orderID)
         {
             bool result = false;
@@ -551,7 +551,7 @@ namespace newNeo
             return result;
         }
         
-        /@ param new owner address passed to change old authorizations
+        //@ param new owner address passed to change old authorizations
         public static bool updateVault(byte[] newOwer)
         {
             byte[] _approver = Storage.Get(Storage.CurrentContext, "approver");
